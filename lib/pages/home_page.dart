@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController amountController = TextEditingController();
 
   //Future to load graph data and month total
-  Future<Map<int, double>>? _monthlyTotalsFuture;
+  Future<Map<String, double>>? _monthlyTotalsFuture;
   Future<double>? _calculateCurrentMonthTotal;
 
   @override
@@ -204,11 +204,20 @@ class _HomePageState extends State<HomePage> {
                     builder: (context, snapsot) {
                       // data is loaded
                       if (snapsot.connectionState == ConnectionState.done) {
-                        final monthlyTotals = snapsot.data ?? {};
+                        Map<String, double> monthlyTotals = snapsot.data ?? {};
 
                         List<double> monthlySummary = List.generate(
                           monthCount,
-                          (index) => monthlyTotals[startMonth + index] ??= 0,
+                          (index) {
+                            int year =
+                                startYear + (startMonth + index - 1) ~/ 12;
+                            int month = (startMonth + index - 1) % 12 + 1;
+
+                            //create the key in the format 'year-month'
+                            String yearMonthKey = '$year-$month';
+                            //return the total for year month or 0 if not found
+                            return monthlyTotals[yearMonthKey] ?? 0;
+                          },
                         );
 
                         return MyBarGraph(
@@ -223,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-
+                const SizedBox(height: 25),
                 //List of Expenses
                 Expanded(
                   child: ListView.builder(

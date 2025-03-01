@@ -67,6 +67,7 @@ class _MyBarGraphState extends State<MyBarGraph> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: _scrollController,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: SizedBox(
